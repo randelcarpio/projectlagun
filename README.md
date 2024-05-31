@@ -58,10 +58,10 @@ To set up and run the admin side of Project Lagun locally, follow these steps:
 
 ## Screenshots
 
-![Screenshot (5549)](screenshot5549.png)
-![Screenshot (5551)](screenshot5551.png)
-![Screenshot (5552)](screenshot5552.png)
-![Screenshot (5559)](screenshot5559.png)
+![Screenshot (5549)](Screenshot%20(5549).png)
+![Screenshot (5551)](Screenshot%20(5551).png)
+![Screenshot (5552)](Screenshot%20(5552).png)
+![Screenshot (5559)](Screenshot%20(5559).png)
 
 ## Contributors
 

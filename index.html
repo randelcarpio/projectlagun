@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Responsive Side Navigation Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Your existing CSS */
+        body {
+            overflow: hidden; /* Hide the scroll bar for the main page */
+            font-family: 'Roboto', sans-serif; /* Use Roboto font */
+        }
+
+        .sidebar {
+            width: 15%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow: auto;
+            background-color: #105861;
+            padding-top: 30px; /* Reduced padding at the top */
+        }
+
+        .sidebar a {
+            display: block;
+            color: #f8f9fa;
+            padding: 16px;
+            text-decoration: none;
+            font-weight: bold; /* Make the text bold */
+        }
+ 
+        .sidebar a.active {
+            background-color: #f8f9fa;
+            color: #105861;
+        }
+
+        #contentFrame {
+            margin-left: 15%;
+            padding: 1em;
+            width: 85%;
+            height: 95vh; /* Reduced the height of the iframe */
+            border: none;
+        }
+
+        /* Style the scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #105861; /* Same color as the nav bar */
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #105861;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" class="nav-link active" onclick="loadPage('dashboard.php')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <!-- Group 1 -->
+        <hr class="divider">
+        <div id="group1">
+            <a href="#" class="nav-link" onclick="loadPage('bookings.php')"><i class="fas fa-calendar-check"></i> List of Bookings</a>
+            <a href="#" class="nav-link" onclick="loadPage('customers.php')"><i class="fas fa-users"></i> List of Customers</a>
+            <a href="#" class="nav-link" onclick="loadPage('bills.php')"><i class="fas fa-file-invoice-dollar"></i> List of Bills</a>
+        </div>
+        <!-- Group 2 -->
+        <hr class="divider">
+        <div id="group2">
+            <a href="#" class="nav-link" onclick="loadPage('room.php')"><i class="fas fa-door-open"></i> Rooms</a>
+            <a href="#" class="nav-link" onclick="loadPage('room_type.php')"><i class="fas fa-bed"></i> Room Types</a>
+            <a href="#" class="nav-link" onclick="loadPage('test_images.php')"><i class="fas fa-image"></i> Room Images</a>
+            <a href="#" class="nav-link" onclick="loadPage('amenities.php')"><i class="fas fa-concierge-bell"></i> Amenities</a>
+            <a href="#" class="nav-link" onclick="loadPage('extras.php')"><i class="fas fa-gift"></i> Extras</a>
+        </div>
+        <!-- Group 3 -->
+        <hr class="divider">
+        <div id="group3">
+            <a href="#" class="nav-link" onclick="loadPage('users.php')"><i class="fas fa-user"></i>System Users</a>
+        </div>
+        <hr class="divider">
+        <button onclick="logout()" class="btn btn-danger w-100"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <iframe id="contentFrame"></iframe>
+
+    <script>
+        /* Your existing JavaScript */
+        function loadPage(pageUrl) {
+            // Remove active class from all links
+            var links = document.getElementsByClassName('nav-link');
+            for (var i = 0; i < links.length; i++) {
+                links[i].classList.remove('active');
+            }
+
+            // Add active class to the clicked link
+            event.target.classList.add('active');
+
+            // Load the page into the iframe
+            document.getElementById('contentFrame').src = pageUrl;
+        }
+
+        // Load the default page
+        loadPage('dashboard.php');
+
+        // Check access level and display appropriate links
+        document.addEventListener('DOMContentLoaded', function() {
+            var accessLevel = getCookie('access_level');
+            if (accessLevel == 'front_desk' || accessLevel == 'admin' || accessLevel == 'super_admin') {
+                document.getElementById('group1').style.display = 'block';
+            }
+            if (accessLevel == 'admin' || accessLevel == 'super_admin') {
+                document.getElementById('group2').style.display = 'block';
+            }
+            if (accessLevel == 'super_admin') {
+                document.getElementById('group3').style.display = 'block';
+            }
+        });
+
+        // Function to get a cookie
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+
+        // Function to clear all cookies and reload the page
+        function logout() {
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+
+
